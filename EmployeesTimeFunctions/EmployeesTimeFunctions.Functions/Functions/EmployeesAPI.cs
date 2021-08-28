@@ -46,7 +46,7 @@ namespace EmployeesTimeFunctions.Functions.Functions
                 PartitionKey = "Employee",
                 RowKey = Guid.NewGuid().ToString()
             };
-    
+
             TableOperation addOperation = TableOperation.Insert(employeeEntity);
             await employeesTable.ExecuteAsync(addOperation);
 
