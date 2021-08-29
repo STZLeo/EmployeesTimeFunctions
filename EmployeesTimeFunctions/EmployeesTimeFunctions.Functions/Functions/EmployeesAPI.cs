@@ -61,5 +61,55 @@ namespace EmployeesTimeFunctions.Functions.Functions
 
             });
         }
+
+        [FunctionName(nameof(UpdateTime))]
+        public static async Task<IActionResult> UpdateTime(
+    [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "employeesTime/{id}")] HttpRequest req,
+    [Table("employeesTime", Connection = "AzureWebJobsStorage")] CloudTable employeesTable,
+    string id,
+    ILogger log)
+        {
+            log.LogInformation($"Received an update, id: {id}");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            Employee employee = JsonConvert.DeserializeObject<Employee>(requestBody);
+
+            //Validate time entry
+
+            TableOperation findOperation = TableOperation.Retrieve<EmployeeEntity>("Employee", id);
+            TableResult findResult = await employeesTable.ExecuteAsync(findOperation);
+
+            if (findResult.Result == null)
+            {
+                return new BadRequestObjectResult(new Responses
+                {
+                    IsSuccess = false,
+                    Message = "Entry not found"
+                });
+            };
+
+            //Update time entry 
+
+            EmployeeEntity employeeEntity = (EmployeeEntity)findResult.Result;
+            if (employee.IsConsolidated != employeeEntity.IsConsolidated || employee.DateTime != employeeEntity.DateTime)
+            {
+                employeeEntity.IsConsolidated = employee.IsConsolidated;
+                employeeEntity.DateTime = employee.DateTime;
+            }
+
+            TableOperation addOperation = TableOperation.Replace(employeeEntity);
+            await employeesTable.ExecuteAsync(addOperation);
+
+            string message = $"Time entry with id: {id} was modifed";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new Responses
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = employeeEntity
+
+            });
+        }
     }
 }
