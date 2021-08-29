@@ -64,10 +64,10 @@ namespace EmployeesTimeFunctions.Functions.Functions
 
         [FunctionName(nameof(UpdateTime))]
         public static async Task<IActionResult> UpdateTime(
-    [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "employeesTime/{id}")] HttpRequest req,
-    [Table("employeesTime", Connection = "AzureWebJobsStorage")] CloudTable employeesTable,
-    string id,
-    ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "employeesTime/{id}")] HttpRequest req,
+            [Table("employeesTime", Connection = "AzureWebJobsStorage")] CloudTable employeesTable,
+            string id,
+            ILogger log)
         {
             log.LogInformation($"Received an update, id: {id}");
 
@@ -109,6 +109,28 @@ namespace EmployeesTimeFunctions.Functions.Functions
                 Message = message,
                 Result = employeeEntity
 
+            });
+        }
+
+        [FunctionName(nameof(GetAllTimes))]
+            public static async Task<IActionResult> GetAllTimes(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "employeesTime")] HttpRequest req,
+            [Table("employeesTime", Connection = "AzureWebJobsStorage")] CloudTable employeesTable,
+            ILogger log)
+        {
+            log.LogInformation("Retrieving all employees Time");
+
+            TableQuery<EmployeeEntity> query = new TableQuery<EmployeeEntity>();
+            TableQuerySegment<EmployeeEntity> times = await employeesTable.ExecuteQuerySegmentedAsync(query, null);
+
+            string message = $"Got all employees time";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new Responses
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = times
             });
         }
     }
