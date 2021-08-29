@@ -133,5 +133,35 @@ namespace EmployeesTimeFunctions.Functions.Functions
                 Result = times
             });
         }
+
+        [FunctionName(nameof(GetTimeById))]
+        public static IActionResult GetTimeById(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "employeesTime/{id}")] HttpRequest req,
+            [Table("employeesTime", "Employee", "{id}", Connection = "AzureWebJobsStorage")] EmployeeEntity employeeEntity,
+            string id,
+            ILogger log)
+        {
+
+            log.LogInformation("Getting employee record by ID");
+
+            if (employeeEntity == null)
+            {
+                return new BadRequestObjectResult(new Responses
+                {
+                    IsSuccess = false,
+                    Message = "Employee record not found"
+                });
+            }
+
+            string message = $"Employee record #{employeeEntity.EmployeeId} being shown";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new Responses
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = employeeEntity
+            });
+        }
     }
 }
