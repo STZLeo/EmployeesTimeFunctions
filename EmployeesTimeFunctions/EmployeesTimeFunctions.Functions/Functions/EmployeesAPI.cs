@@ -163,5 +163,38 @@ namespace EmployeesTimeFunctions.Functions.Functions
                 Result = employeeEntity
             });
         }
+
+        [FunctionName(nameof(DeleteRecord))]
+        public static async Task<IActionResult> DeleteRecord(
+    [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "employeesTime/{id}")] HttpRequest req,
+    [Table("employeesTime", "Employee", "{id}", Connection = "AzureWebJobsStorage")] EmployeeEntity employeeEntity,
+    [Table("employeesTime", Connection = "AzureWebJobsStorage")] CloudTable employeesTable,
+    string id,
+    ILogger log)
+        {
+
+            log.LogInformation($"Delete employee record {id}, received");
+
+            if (employeeEntity == null)
+            {
+                return new BadRequestObjectResult(new Responses
+                {
+                    IsSuccess = false,
+                    Message = "Employee record not found"
+                });
+            }
+
+            await employeesTable.ExecuteAsync(TableOperation.Delete(employeeEntity));
+
+            string message = $"Employee record #{employeeEntity.EmployeeId}, deleted";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new Responses
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = employeeEntity
+            });
+        }
     }
 }
