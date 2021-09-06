@@ -27,7 +27,7 @@ namespace EmployeesTimeFunctions.Functions.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             Employee employee = JsonConvert.DeserializeObject<Employee>(requestBody);
 
-            if (employee.EmployeeId < 1 || employee.Type < 0 || employee.Type > 1 || employee.DateTime == null || string.IsNullOrEmpty(requestBody))
+            if (employee.DateTime == DateTime.MinValue || string.IsNullOrEmpty(employee?.EmployeeId) || employee.Type == null || employee.Type < 1 || employee.Type > 0)
             {
                 return new BadRequestObjectResult(new Responses
                 {
@@ -58,7 +58,6 @@ namespace EmployeesTimeFunctions.Functions.Functions
                 IsSuccess = true,
                 Message = message,
                 Result = employeeEntity
-
             });
         }
 
@@ -91,10 +90,20 @@ namespace EmployeesTimeFunctions.Functions.Functions
             //Update time entry 
 
             EmployeeEntity employeeEntity = (EmployeeEntity)findResult.Result;
-            if (employee.IsConsolidated != employeeEntity.IsConsolidated || employee.DateTime != employeeEntity.DateTime)
+            if (!string.IsNullOrEmpty(requestBody))
             {
-                employeeEntity.IsConsolidated = employee.IsConsolidated;
-                employeeEntity.DateTime = employee.DateTime;
+                if (employee.IsConsolidated != employeeEntity.IsConsolidated || employee.IsConsolidated != null || employee.DateTime != DateTime.MinValue)
+                {
+                    employeeEntity.IsConsolidated = employee.IsConsolidated;
+                    
+                } else 
+                {
+                    return new BadRequestObjectResult(new Responses
+                    {
+                        IsSuccess = false,
+                        Message = "Entry not found"
+                    });
+                }             
             }
 
             TableOperation addOperation = TableOperation.Replace(employeeEntity);
@@ -196,5 +205,6 @@ namespace EmployeesTimeFunctions.Functions.Functions
                 Result = employeeEntity
             });
         }
+
     }
 }

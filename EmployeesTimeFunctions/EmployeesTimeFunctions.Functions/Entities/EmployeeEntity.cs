@@ -5,7 +5,7 @@ namespace EmployeesTimeFunctions.Functions.Entities
 {
     public class EmployeeEntity : TableEntity
     {
-        public int EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
         public DateTime DateTime { get; set; }
         public int Type { get; set; }
         public bool IsConsolidated { get; set; }

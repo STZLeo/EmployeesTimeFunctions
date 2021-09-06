@@ -21,7 +21,7 @@ namespace EmployeesTimeFunctions.Test.Helpers
                 ETag = "*",
                 PartitionKey = "Employee",
                 RowKey = Guid.NewGuid().ToString(),
-                DateTime = DateTime.Now,
+                Timestamp = DateTime.Now,
                 IsConsolidated = false,
             };
         }
@@ -62,7 +62,6 @@ namespace EmployeesTimeFunctions.Test.Helpers
         {
             return new Employee
             {
-                DateTime = DateTime.Now,
                 IsConsolidated = false,
             };
         }
