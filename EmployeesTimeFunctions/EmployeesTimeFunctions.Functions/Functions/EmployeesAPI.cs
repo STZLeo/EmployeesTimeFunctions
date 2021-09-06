@@ -27,12 +27,12 @@ namespace EmployeesTimeFunctions.Functions.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             Employee employee = JsonConvert.DeserializeObject<Employee>(requestBody);
 
-            if (employee.DateTime == DateTime.MinValue || string.IsNullOrEmpty(employee?.EmployeeId) || employee.Type == null || employee.Type < 1 || employee.Type > 0)
+            if (employee.DateTime == DateTime.MinValue || string.IsNullOrEmpty(employee?.EmployeeId) || employee.Type == null || employee.Type > 1 || employee.Type < 0)
             {
                 return new BadRequestObjectResult(new Responses
                 {
                     IsSuccess = false,
-                    Message = "The request must have a validate datetime"
+                    Message = "The request must have Data time, Employee Id and Type filled"
                 });
             }
 

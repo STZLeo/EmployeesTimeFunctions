@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace EmployeesTimeFunctions.Functions.Functions
     {
         [FunctionName(nameof(RunConsolidate))]
         public static async Task RunConsolidate(
-            [TimerTrigger("0 */1 * * * *")] TimerInfo myTimer,
+            [TimerTrigger("0")] TimerInfo myTimer,
             [Table("employeesTime", Connection = "AzureWebJobsStorage")] CloudTable employeesTable,
             [Table("employeesConsolidate", Connection = "AzureWebJobsStorage")] CloudTable consolidateTable,
             ILogger log)
@@ -38,4 +38,4 @@ namespace EmployeesTimeFunctions.Functions.Functions
 
         }
     }
-}
+}*/

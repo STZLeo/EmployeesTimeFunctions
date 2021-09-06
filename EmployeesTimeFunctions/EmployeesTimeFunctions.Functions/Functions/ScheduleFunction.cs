@@ -1,4 +1,4 @@
-using Microsoft.Azure.WebJobs;
+/*using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
@@ -10,10 +10,11 @@ namespace EmployeesTimeFunctions.Functions.Functions
     {
         [FunctionName("ScheduleFunction")]
         public static void Run(
-            [TimerTrigger("0 */2 * * * *")] TimerInfo myTimer,
+            [TimerTrigger("0 ")] TimerInfo myTimer,
             ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
         }
     }
 }
+*/
